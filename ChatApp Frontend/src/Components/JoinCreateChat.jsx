@@ -1,0 +1,6 @@
+const JoinCreateChat = () =>{
+    return (
+        <>
+        </>
+    );
+};
