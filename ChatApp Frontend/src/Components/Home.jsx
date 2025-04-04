@@ -3,6 +3,8 @@ import { useThemeContext } from "../Context/ThemeContext.jsx";
 import { LightMode, DarkMode, MeetingRoom, AddCircle } from "@mui/icons-material";
 import '@fontsource/teko';
 import '@fontsource/poppins';
+import Logo from '../Util/Chat-Rooms Logo.png'
+import DarkModeLogo from '../Util/Chat-Rooms Logo White Text.png'
 
 function Home() {
     const { darkMode, toggleDarkMode } = useThemeContext();
@@ -24,6 +26,20 @@ function Home() {
                 transition: "background 0.5s ease-in-out",
             }}
         >
+            <Box
+                component="img"
+                src={darkMode ? DarkModeLogo : Logo}
+                alt="Chat-Rooms Logo"
+                sx={{
+                    alignSelf: "flex-start",
+                    justifySelf: "flex-start",
+                    width: 200,
+                    height: 60,
+                    mt: 3,
+                    zIndex: 3,  // Ensuring it's above the overlay
+                    position: "relative" // Making sure it follows stacking context
+                }}
+            />
             {/* Overlay to make text readable */}
             <Box
                 sx={{
@@ -38,7 +54,6 @@ function Home() {
                     backdropFilter: "blur(8px)",
                 }}
             />
-
             {/* Main Content */}
             <Container
                 sx={{
@@ -48,7 +63,13 @@ function Home() {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    justifyContent:"center",
                     zIndex: 2,
+                    background: darkMode ? "linear-gradient(45deg, #0f0f27, #16242e, #2c3464)" : "linear-gradient(45deg, #36d1dc, #5b86e5)",
+                    borderRadius: 6,
+                    maxWidth: "80vw", // Decreased width
+                    height: "80vh", // Increased height
+                    mr:25
                 }}
             >
 
@@ -88,7 +109,7 @@ function Home() {
                         textShadow: "0px 4px 10px rgba(0,0,0,0.3)",
                     }}
                 >
-                    Welcome to Chat
+                    Welcome to Chat-Rooms
                 </Typography>
 
                 {/* Catchy Tagline */}
