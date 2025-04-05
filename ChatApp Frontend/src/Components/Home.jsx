@@ -1,13 +1,35 @@
 import { Box, Button, Container, Typography, Stack } from "@mui/material";
+import { useState } from "react";
 import { useThemeContext } from "../Context/ThemeContext.jsx";
 import { LightMode, DarkMode, MeetingRoom, AddCircle } from "@mui/icons-material";
 import '@fontsource/teko';
 import '@fontsource/poppins';
-import Logo from '../Util/Chat-Rooms Logo.png'
-import DarkModeLogo from '../Util/Chat-Rooms Logo White Text.png'
+import Logo from '../Util/Chat-Hive Logo.png';
+import JoinRoom from "./Modal/JoinRoom.jsx";
+import CreateRoom from "./Modal/CreateRoom.jsx";
 
-function Home() {
+// 💡 Reusable Styles
+const actionButtonStyle = {
+    borderRadius: 20,
+    fontWeight: "bold",
+    px: 4,
+    py: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+    fontSize: 18,
+    transition: "0.3s",
+};
+
+const Home = () => {
     const { darkMode, toggleDarkMode } = useThemeContext();
+    const [joinModalOpen, setJoinModalOpen] = useState(false);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
+
+    const handleJoinOpen = () => setJoinModalOpen(true);
+    const handleJoinClose = () => setJoinModalOpen(false);
+    const handleCreateOpen = () => setCreateModalOpen(true);
+    const handleCreateClose = () => setCreateModalOpen(false);
 
     return (
         <Box
@@ -28,19 +50,20 @@ function Home() {
         >
             <Box
                 component="img"
-                src={darkMode ? DarkModeLogo : Logo}
-                alt="Chat-Rooms Logo"
+                src={Logo}
+                alt="Chat-Hive Logo"
                 sx={{
-                    alignSelf: "flex-start",
-                    justifySelf: "flex-start",
-                    width: 200,
-                    height: 60,
-                    mt: 3,
-                    zIndex: 3,  // Ensuring it's above the overlay
-                    position: "relative" // Making sure it follows stacking context
+                    position: "absolute",
+                    top: -80,
+                    left: 10,
+                    width: 250, // Increase this value if you want it even bigger
+                    height: "auto",
+                    zIndex: 5,
                 }}
             />
-            {/* Overlay to make text readable */}
+
+
+
             <Box
                 sx={{
                     position: "absolute",
@@ -54,7 +77,7 @@ function Home() {
                     backdropFilter: "blur(8px)",
                 }}
             />
-            {/* Main Content */}
+
             <Container
                 sx={{
                     position: "relative",
@@ -63,17 +86,18 @@ function Home() {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent:"center",
+                    justifyContent: "center",
                     zIndex: 2,
-                    background: darkMode ? "linear-gradient(45deg, #0f0f27, #16242e, #2c3464)" : "linear-gradient(45deg, #36d1dc, #5b86e5)",
+                    background: darkMode
+                        ? "linear-gradient(45deg, #0f0f27, #16242e, #2c3464)"
+                        : "linear-gradient(135deg, #6a11cb, #2575fc)",
                     borderRadius: 6,
-                    maxWidth: "80vw", // Decreased width
-                    height: "80vh", // Increased height
-                    mr:25
+                    maxWidth: "80vw",
+                    height: "80vh",
+                    mr: 25,
+                    ml:25
                 }}
             >
-
-                {/* Dark Mode Switch */}
                 <Button
                     onClick={toggleDarkMode}
                     variant="contained"
@@ -98,21 +122,20 @@ function Home() {
                     {darkMode ? "Light Mode" : "Dark Mode"}
                 </Button>
 
-                {/* Chat App Title */}
                 <Typography
                     sx={{
                         fontSize: { xs: 60, md: 100 },
                         fontFamily: "teko",
-                        background: "linear-gradient(90deg, #ff512f, #dd2476)",
+                        background: darkMode ? "linear-gradient(90deg, #ff512f, #dd2476)" : "linear-gradient(45deg, #8a0707, #ff1e56)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
-                        textShadow: "0px 4px 10px rgba(0,0,0,0.3)",
+                        textShadow: "0 3px 6px rgba(0, 0, 0, 0.2)"
+
                     }}
                 >
-                    Welcome to Chat-Rooms
+                    Welcome to<br/> Chat-Hive
                 </Typography>
 
-                {/* Catchy Tagline */}
                 <Typography
                     sx={{
                         fontWeight: "bold",
@@ -122,23 +145,15 @@ function Home() {
                         mb: 3,
                     }}
                 >
-                    Room Based Chat Service
+                    Join. Chat. Connect.
                 </Typography>
 
-                {/* Call-to-Action Buttons */}
                 <Stack direction="row" spacing={3}>
                     <Button
                         variant="contained"
+                        onClick={handleJoinOpen}
                         sx={{
-                            borderRadius: 20,
-                            fontWeight: "bold",
-                            px: 4,
-                            py: 1,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            fontSize: 18,
-                            transition: "0.3s",
+                            ...actionButtonStyle,
                             background: "linear-gradient(45deg, #ff6b6b, #f94c10)",
                             "&:hover": {
                                 transform: "translateY(-3px)",
@@ -151,20 +166,13 @@ function Home() {
                     </Button>
                     <Button
                         variant="contained"
+                        onClick={handleCreateOpen}
                         sx={{
-                            borderRadius: 20,
-                            fontWeight: "bold",
-                            px: 4,
-                            py: 1,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            fontSize: 18,
-                            transition: "0.3s",
-                            background: "linear-gradient(45deg, #36d1dc, #5b86e5)",
+                            ...actionButtonStyle,
+                            background: "linear-gradient(45deg, #5be57e, #36dc52)",
                             "&:hover": {
                                 transform: "translateY(-3px)",
-                                background: "linear-gradient(45deg, #5b86e5, #36d1dc)",
+                                background: "linear-gradient(45deg, #5be57e, #36dc52)",
                             },
                         }}
                     >
@@ -173,8 +181,11 @@ function Home() {
                     </Button>
                 </Stack>
             </Container>
+
+            <JoinRoom open={joinModalOpen} handleClose={handleJoinClose} />
+            <CreateRoom open={createModalOpen} handleClose={handleCreateClose} />
         </Box>
     );
-}
+};
 
 export default Home;
