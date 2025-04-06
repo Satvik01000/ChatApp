@@ -1,17 +1,18 @@
 import React from "react";
 import {useLocation, useNavigate} from "react-router";
-import {
-    Box, Button, Grid, IconButton, InputBase, Paper, Typography, Avatar, AppBar, Toolbar
-} from "@mui/material";
+import { Box, Button, Grid, IconButton, InputBase, Paper, Typography, Avatar, AppBar, Toolbar} from "@mui/material";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import toast from "react-hot-toast";
 import ChatHiveLogo from "../Util/ChatHiveLogo.jsx";
+import {useThemeContext} from "../Context/ThemeContext.jsx";
 
 const ChatRoom = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { name, roomId, roomName } = location.state || {};
+    const { mode } = useThemeContext();
+    const toolBarText = {fontFamily:"Poppins",color: mode === "dark" ? "black" : "white",letterSpacing: 0.5,};
 
     return (
         <Box sx={{ bgcolor: "background.default", height: "100vh", overflow: "hidden" }}>
@@ -33,7 +34,7 @@ const ChatRoom = () => {
                     >
                         <Typography
                             variant="subtitle1"
-                            sx={{ color: "grey.300", letterSpacing: 0.5 }}
+                            sx={{...toolBarText}}
                         >
                             Room Name:{" "}
                             <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>
@@ -43,7 +44,7 @@ const ChatRoom = () => {
 
                         <Typography
                             variant="subtitle1"
-                            sx={{ color: "grey.300", letterSpacing: 0.5 }}
+                            sx={{...toolBarText}}
                         >
                             Room ID:{" "}
                             <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>
@@ -53,7 +54,7 @@ const ChatRoom = () => {
 
                         <Typography
                             variant="subtitle1"
-                            sx={{ color: "grey.300", letterSpacing: 0.5 }}
+                            sx={{...toolBarText}}
                         >
                             User:{" "}
                             <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>
@@ -73,7 +74,7 @@ const ChatRoom = () => {
                                 boxShadow: "none",
                             }}
                             onClick={() => {
-                                toast.custom("Leaving Room");
+                                toast.success("Leaving Room");
                                 navigate("/");
                             }}
                         >
