@@ -7,6 +7,7 @@ import '@fontsource/poppins';
 import Logo from '../Util/Chat-Hive Logo.png';
 import JoinRoom from "./Modal/JoinRoom.jsx";
 import CreateRoom from "./Modal/CreateRoom.jsx";
+import ChatHiveLogo from "../Util/ChatHiveLogo.jsx";
 
 // 💡 Reusable Styles
 const actionButtonStyle = {
@@ -48,22 +49,7 @@ const Home = () => {
                 transition: "background 0.5s ease-in-out",
             }}
         >
-            <Box
-                component="img"
-                src={Logo}
-                alt="Chat-Hive Logo"
-                sx={{
-                    position: "absolute",
-                    top: -80,
-                    left: 10,
-                    width: 250, // Increase this value if you want it even bigger
-                    height: "auto",
-                    zIndex: 5,
-                }}
-            />
-
-
-
+            <ChatHiveLogo/>
             <Box
                 sx={{
                     position: "absolute",

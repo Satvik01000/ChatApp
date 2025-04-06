@@ -1,9 +1,29 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import {useState} from "react";
+import {BaseURL} from "../../Util/BaseURL.js";
+import axios from "axios";
+import {useNavigate} from "react-router";
+import toast from "react-hot-toast";
 const CreateRoom = ({ open, handleClose }) => {
     const [name, setName] = useState("");
     const [roomId, setRoomId] = useState("");
     const [roomName, setRoomName] = useState("");
+    const navigate = useNavigate();
+    const handleCreateRoom = async () => {
+        try {
+            const response = await axios.post(`${BaseURL}/room`, {roomId, roomName});
+            if(response.status === 201) {
+                toast.success("Room created! Redirecting");
+                navigate("/chat", {state :{name, roomId, roomName}});
+            }else if(response.status === 400) {
+                toast.error("Room already exists!");
+                navigate("/");
+            }
+        }catch (error) {
+            toast.error(error.message);
+            navigate("/");
+        }
+    }
     return (
         <Modal open={open} onClose={handleClose}>
             <Box
@@ -23,7 +43,7 @@ const CreateRoom = ({ open, handleClose }) => {
                 }}
             >
                 <Typography variant="h5" mb={4} sx={{ fontWeight: "bold" }}>
-                    Join a Room
+                    Create a Room
                 </Typography>
 
                 <TextField
@@ -80,6 +100,7 @@ const CreateRoom = ({ open, handleClose }) => {
 
                 <Button
                     variant="contained"
+                    disabled={!name || !roomId || !roomName}  // <- disable if any field is empty
                     sx={{
                         backgroundColor: "#00bcd4",
                         color: "black",
@@ -88,9 +109,11 @@ const CreateRoom = ({ open, handleClose }) => {
                             backgroundColor: "#00acc1",
                         },
                     }}
+                    onClick={handleCreateRoom}
                 >
-                    Join
+                    Create Room
                 </Button>
+
             </Box>
         </Modal>
     );
