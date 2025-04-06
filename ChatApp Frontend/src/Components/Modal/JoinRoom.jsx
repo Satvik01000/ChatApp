@@ -1,8 +1,29 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import {useState} from "react";
+import axios from "axios";
+import {BaseURL} from "../../Util/BaseURL.js";
+import {useNavigate} from "react-router";
+import toast from "react-hot-toast";
 const JoinRoom = ({ open, handleClose }) => {
     const [name, setName] = useState("");
     const [roomId, setRoomId] = useState("");
+    const navigate = useNavigate();
+    const handleJoinRoom = async () => {
+        try {
+            const response = await axios.get(`${BaseURL}/room/${roomId}`);
+            if (response.status === 200) {
+                console.log(response.data);
+                toast.success("Joining the room");
+                navigate("/chat", { state: { name, roomId, roomName: response.data.roomName } });
+            } else {
+                toast.error("No such room exists");
+                navigate("/");
+            }
+        } catch (error) {
+            toast.error("No such room exists");
+            navigate("/");
+        }
+    };
 
     return (
         <Modal open={open} onClose={handleClose}>
@@ -64,6 +85,7 @@ const JoinRoom = ({ open, handleClose }) => {
 
                 <Button
                     variant="contained"
+                    disabled={!roomId || !name}
                     sx={{
                         backgroundColor: "#00bcd4",
                         color: "black",
@@ -72,6 +94,7 @@ const JoinRoom = ({ open, handleClose }) => {
                             backgroundColor: "#00acc1",
                         },
                     }}
+                    onClick={handleJoinRoom}
                 >
                     Join
                 </Button>
