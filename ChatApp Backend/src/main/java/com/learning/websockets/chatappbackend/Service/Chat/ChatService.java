@@ -5,5 +5,5 @@ import com.learning.websockets.chatappbackend.Entities.Messages;
 import org.springframework.http.ResponseEntity;
 
 public interface ChatService {
-    ResponseEntity<?> sendMessages(String roomId, MessageRequest request);
+    MessageRequest sendMessages(String roomId, MessageRequest request);
 }
