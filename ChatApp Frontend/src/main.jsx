@@ -5,6 +5,7 @@ import {BrowserRouter} from "react-router";
 import AppConfig from "./Config/AppConfig.jsx";
 import { Toaster } from "react-hot-toast";
 import { ThemeProviderWrapper } from "./Context/ThemeContext.jsx";
+window.global = window;
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>

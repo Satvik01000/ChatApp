@@ -5,7 +5,7 @@ import {BaseURL} from "../../Util/BaseURL.js";
 import {useNavigate} from "react-router";
 import toast from "react-hot-toast";
 const JoinRoom = ({ open, handleClose }) => {
-    const [name, setName] = useState("");
+    const [sender, setSender] = useState("");
     const [roomId, setRoomId] = useState("");
     const navigate = useNavigate();
     const handleJoinRoom = async () => {
@@ -14,7 +14,8 @@ const JoinRoom = ({ open, handleClose }) => {
             if (response.status === 200) {
                 console.log(response.data);
                 toast.success("Joining the room");
-                navigate("/chat", { state: { name, roomId, roomName: response.data.roomName } });
+                navigate("/chat", { state: { sender, roomId, roomName: response.data.roomName } });
+                localStorage.setItem("sender", response.data.sender);
             } else {
                 toast.error("No such room exists");
                 navigate("/");
@@ -51,8 +52,8 @@ const JoinRoom = ({ open, handleClose }) => {
                     label="Your Name"
                     variant="outlined"
                     fullWidth
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={sender}
+                    onChange={(e) => setSender(e.target.value)}
                     sx={{
                         input: { color: "white" },
                         label: { color: "grey.400" },
@@ -85,7 +86,7 @@ const JoinRoom = ({ open, handleClose }) => {
 
                 <Button
                     variant="contained"
-                    disabled={!roomId || !name}
+                    disabled={!roomId || !sender}
                     sx={{
                         backgroundColor: "#00bcd4",
                         color: "black",

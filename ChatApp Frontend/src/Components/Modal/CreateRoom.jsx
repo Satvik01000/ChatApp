@@ -5,7 +5,7 @@ import axios from "axios";
 import {useNavigate} from "react-router";
 import toast from "react-hot-toast";
 const CreateRoom = ({ open, handleClose }) => {
-    const [name, setName] = useState("");
+    const [sender, setSender] = useState("");
     const [roomId, setRoomId] = useState("");
     const [roomName, setRoomName] = useState("");
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const CreateRoom = ({ open, handleClose }) => {
             const response = await axios.post(`${BaseURL}/room`, {roomId, roomName});
             if(response.status === 201) {
                 toast.success("Room created! Redirecting");
-                navigate("/chat", {state :{name, roomId, roomName}});
+                navigate("/chat", {state :{sender, roomId, roomName}});
             }else if(response.status === 400) {
                 toast.error("Room already exists!");
                 navigate("/");
@@ -50,8 +50,8 @@ const CreateRoom = ({ open, handleClose }) => {
                     label="Your Name"
                     variant="outlined"
                     fullWidth
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={sender}
+                    onChange={(e) => setSender(e.target.value)}
                     sx={{
                         input: { color: "white" },
                         label: { color: "grey.400" },
@@ -100,7 +100,7 @@ const CreateRoom = ({ open, handleClose }) => {
 
                 <Button
                     variant="contained"
-                    disabled={!name || !roomId || !roomName}  // <- disable if any field is empty
+                    disabled={!sender || !roomId || !roomName}  // <- disable if any field is empty
                     sx={{
                         backgroundColor: "#00bcd4",
                         color: "black",

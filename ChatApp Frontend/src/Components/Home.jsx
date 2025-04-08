@@ -4,7 +4,6 @@ import { useThemeContext } from "../Context/ThemeContext.jsx";
 import { LightMode, DarkMode, MeetingRoom, AddCircle } from "@mui/icons-material";
 import '@fontsource/teko';
 import '@fontsource/poppins';
-import Logo from '../Util/Chat-Hive Logo.png';
 import JoinRoom from "./Modal/JoinRoom.jsx";
 import CreateRoom from "./Modal/CreateRoom.jsx";
 import ChatHiveLogo from "../Util/ChatHiveLogo.jsx";
@@ -30,7 +29,6 @@ const Home = () => {
     const handleJoinClose = () => setJoinModalOpen(false);
     const handleCreateOpen = () => setCreateModalOpen(true);
     const handleCreateClose = () => setCreateModalOpen(false);
-
     return (
         <Box
             sx={{
