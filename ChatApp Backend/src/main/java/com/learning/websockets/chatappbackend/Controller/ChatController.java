@@ -19,7 +19,8 @@ public class ChatController {
 
     @MessageMapping("/sendMessage/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    public ResponseEntity<?> sendMessage(@DestinationVariable String roomId, @RequestBody MessageRequest request){
-        return chatService.sendMessages(roomId, request);
+    public MessageRequest sendMessage(@DestinationVariable String roomId, MessageRequest request) {
+        return chatService.sendMessages(roomId, request); // Let this return a DTO directly
     }
+
 }

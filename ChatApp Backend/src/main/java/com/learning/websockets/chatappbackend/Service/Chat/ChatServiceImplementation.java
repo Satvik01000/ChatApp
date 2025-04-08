@@ -25,10 +25,11 @@ public class ChatServiceImplementation implements ChatService{
     }
 
     @Override
-    public ResponseEntity<?> sendMessages(String roomId, MessageRequest request) {
+    public MessageRequest sendMessages(String roomId, MessageRequest request) {
         Room room = roomRepo.findRoomByRoomId(request.getRoomId());
-        if(room==null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No such room found");
+        if (room == null) {
+            throw new IllegalArgumentException("No such room found");
+        }
 
         Messages messages = new Messages();
         messages.setSender(request.getSender());
@@ -38,6 +39,7 @@ public class ChatServiceImplementation implements ChatService{
         messageRepository.save(messages);
         roomService.addMessageToRoom(request.getRoomId(), messages);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(messages);
+        return request;
     }
+
 }

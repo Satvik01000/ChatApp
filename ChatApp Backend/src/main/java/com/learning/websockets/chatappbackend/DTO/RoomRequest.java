@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class RoomRequest {
     private String roomId;
+    private String roomName;
 }

@@ -1,5 +1,6 @@
 package com.learning.websockets.chatappbackend.Service.Room;
 
+import com.learning.websockets.chatappbackend.DTO.RoomRequest;
 import com.learning.websockets.chatappbackend.Entities.Messages;
 import com.learning.websockets.chatappbackend.Entities.Room;
 import com.learning.websockets.chatappbackend.Repository.MessageRepository;
@@ -24,12 +25,13 @@ public class RoomServiceImplementation implements RoomService{
     private final MessageRepository messageRepository;
 
     @Override
-    public ResponseEntity<?> createRoom(String roomId) {
-        if(roomRepo.findRoomByRoomId(roomId)!=null){
+    public ResponseEntity<?> createRoom(RoomRequest request) {
+        if(roomRepo.findRoomByRoomId(request.getRoomId())!=null){
             return ResponseEntity.badRequest().body("Room already exists");
         }
         Room room = new Room();
-        room.setRoomId(roomId);
+        room.setRoomId(request.getRoomId());
+        room.setRoomName(request.getRoomName());
         roomRepo.save(room);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(room);
@@ -52,6 +54,7 @@ public class RoomServiceImplementation implements RoomService{
         List<Messages> messages = room.getMessageList();
         return ResponseEntity.ok(messages);
     }
+
     @Override
     public ResponseEntity<?> addMessageToRoom(String roomId, Messages message) {
         Room room = roomRepo.findRoomByRoomId(roomId);

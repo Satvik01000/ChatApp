@@ -21,7 +21,7 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<?> createRoom(@RequestBody RoomRequest roomRequest) {
-        return roomService.createRoom(roomRequest.getRoomId());
+        return roomService.createRoom(roomRequest);
     }
 
     @GetMapping("/{roomId}")
@@ -29,7 +29,7 @@ public class RoomController {
         return roomService.getRoom(roomId);
     }
 
-    @GetMapping("/message/{roomId}")
+    @GetMapping("/messages/{roomId}")
     public ResponseEntity<List<Messages>> getMessages(@PathVariable String roomId){
         return roomService.getMessages(roomId);
     }
