@@ -1,78 +1,91 @@
-import React from "react";
-import {useLocation, useNavigate} from "react-router";
-import { Box, Button, Grid, IconButton, InputBase, Paper, Typography, Avatar, AppBar, Toolbar} from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import {
+    Box, Button, Grid, IconButton, InputBase, Paper, Typography,
+    Avatar, AppBar, Toolbar
+} from "@mui/material";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import toast from "react-hot-toast";
 import ChatHiveLogo from "../Util/ChatHiveLogo.jsx";
-import {useThemeContext} from "../Context/ThemeContext.jsx";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 const ChatRoom = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { name, roomId, roomName } = location.state || {};
-    const { mode } = useThemeContext();
-    const toolBarText = {fontFamily:"Poppins",color: mode === "dark" ? "black" : "white",letterSpacing: 0.5,};
+    const { sender, roomId, roomName } = location.state || {};
+
+    const [content, setContent] = useState('');
+    const [messages, setMessages] = useState([]);
+    const stompClientRef = useRef(null);
+
+    useEffect(() => {
+        const socket = new SockJS('http://localhost:8080/chat');
+        const stompClient = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            debug: (str) => console.log(str),
+            onConnect: () => {
+                console.log('Connected to WebSocket');
+                stompClient.subscribe(`/topic/room/${roomId}`, (response) => {
+                    const received = JSON.parse(response.body);
+                    setMessages(prev => [...prev, received]);
+                });
+            },
+            onStompError: (frame) => {
+                console.error('STOMP error:', frame.headers['message'], frame.body);
+            }
+        });
+
+        stompClient.activate();
+        stompClientRef.current = stompClient;
+
+        return () => {
+            stompClient.deactivate();
+        };
+    }, [roomId]);
+
+    const sendMessage = () => {
+        const stompClient = stompClientRef.current;
+        if (stompClient && stompClient.connected && content.trim() !== '') {
+            const messagePayload = {
+                roomId,
+                sender,
+                content
+            };
+            stompClient.publish({
+                destination: `/app/sendMessage/${roomId}`,
+                body: JSON.stringify(messagePayload)
+            });
+            setContent('');
+        } else {
+            toast.error("Cannot send empty message or not connected.");
+        }
+    };
 
     return (
         <Box sx={{ bgcolor: "background.default", height: "100vh", overflow: "hidden" }}>
             {/* Header */}
             <AppBar position="fixed" color="default" elevation={2}>
-                <Toolbar sx={{ justifyContent: "space-between", alignItems: "center", mb:3}}>
-                    <Box sx={{height: 60}}>
+                <Toolbar sx={{ justifyContent: "space-between", alignItems: "center" }}>
+                    <Box sx={{ height: 60 }}>
                         <ChatHiveLogo />
                     </Box>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 5,
-                            flexWrap: "wrap",
-                            justifyContent: "flex-end",
-                            mt:3
-                        }}
-                    >
-                        <Typography
-                            variant="subtitle1"
-                            sx={{...toolBarText}}
-                        >
-                            Room Name:{" "}
-                            <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>
-                                {roomName || "Unknown"}
-                            </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                        <Typography variant="subtitle1" sx={{ color: "grey.300" }}>
+                            Room Name: <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>{roomName || "Unknown"}</Box>
                         </Typography>
-
-                        <Typography
-                            variant="subtitle1"
-                            sx={{...toolBarText}}
-                        >
-                            Room ID:{" "}
-                            <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>
-                                {roomId || "Unknown"}
-                            </Box>
+                        <Typography variant="subtitle1" sx={{ color: "grey.300" }}>
+                            Room ID: <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>{roomId || "Unknown"}</Box>
                         </Typography>
-
-                        <Typography
-                            variant="subtitle1"
-                            sx={{...toolBarText}}
-                        >
-                            User:{" "}
-                            <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>
-                                {name || "Guest"}
-                            </Box>
+                        <Typography variant="subtitle1" sx={{ color: "grey.300" }}>
+                            User: <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>{sender || "Guest"}</Box>
                         </Typography>
-
                         <Button
                             variant="contained"
                             color="error"
-                            sx={{
-                                borderRadius: "999px",
-                                px: 3,
-                                py: 1,
-                                fontWeight: 600,
-                                textTransform: "none",
-                                boxShadow: "none",
-                            }}
+                            sx={{ borderRadius: "999px", px: 3, py: 1, fontWeight: 600, textTransform: "none", boxShadow: "none" }}
                             onClick={() => {
                                 toast.success("Leaving Room");
                                 navigate("/");
@@ -82,8 +95,6 @@ const ChatRoom = () => {
                         </Button>
                     </Box>
                 </Toolbar>
-
-
             </AppBar>
 
             {/* Chat Messages Area */}
@@ -96,60 +107,33 @@ const ChatRoom = () => {
                     overflowY: "auto",
                     width: { xs: "100%", md: "66%" },
                     mx: "auto",
-                    mt:5
+                    mt: 5
                 }}
             >
-                <Box display="flex" justifyContent="flex-end" mb={2}>
-                    <Paper
-                        elevation={3}
-                        sx={{
-                            bgcolor: "success.dark",
-                            color: "white",
-                            p: 2,
-                            maxWidth: 300,
-                            borderRadius: 2,
-                        }}
-                    >
-                        <Grid container spacing={1}>
-                            <Grid item>
-                                <Avatar src="https://avatar.iran.liara.run/public/43" />
+                {messages.map((msg, index) => (
+                    <Box key={index} display="flex" justifyContent={msg.sender === sender ? "flex-end" : "flex-start"} mb={2}>
+                        <Paper
+                            elevation={3}
+                            sx={{
+                                bgcolor: msg.sender === sender ? "success.dark" : "grey.800",
+                                color: "white",
+                                p: 2,
+                                maxWidth: 300,
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Grid container spacing={1}>
+                                <Grid item>
+                                    <Avatar src={`https://avatar.iran.liara.run/public/${(msg.name?.length || 0) + index}`} />
+                                </Grid>
+                                <Grid item xs>
+                                    <Typography variant="subtitle2">{msg.sender}</Typography>
+                                    <Typography variant="body2">{msg.content}</Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item xs>
-                                <Typography variant="subtitle2">{name || "currentUser"}</Typography>
-                                <Typography variant="body2">This is a sample message</Typography>
-                                <Typography variant="caption" color="grey.400">
-                                    2 minutes ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Box>
-
-                <Box display="flex" justifyContent="flex-start" mb={2}>
-                    <Paper
-                        elevation={3}
-                        sx={{
-                            bgcolor: "grey.800",
-                            color: "white",
-                            p: 2,
-                            maxWidth: 300,
-                            borderRadius: 2,
-                        }}
-                    >
-                        <Grid container spacing={1}>
-                            <Grid item>
-                                <Avatar src="https://avatar.iran.liara.run/public/43" />
-                            </Grid>
-                            <Grid item xs>
-                                <Typography variant="subtitle2">otherUser</Typography>
-                                <Typography variant="body2">Hello there!</Typography>
-                                <Typography variant="caption" color="grey.400">
-                                    5 minutes ago
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Box>
+                        </Paper>
+                    </Box>
+                ))}
             </Box>
 
             {/* Input Box */}
@@ -176,12 +160,15 @@ const ChatRoom = () => {
                 >
                     <InputBase
                         placeholder="Type your message here..."
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                         sx={{ ml: 1, flex: 1, color: "white" }}
                     />
                     <IconButton sx={{ color: "white" }}>
                         <AttachFileIcon />
                     </IconButton>
-                    <IconButton sx={{ color: "white" }}>
+                    <IconButton sx={{ color: "white" }} onClick={sendMessage}>
                         <SendIcon />
                     </IconButton>
                 </Paper>
