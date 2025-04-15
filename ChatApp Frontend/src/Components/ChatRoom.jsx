@@ -7,9 +7,11 @@ import {
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import toast from "react-hot-toast";
-import ChatHiveLogo from "../Util/ChatHiveLogo.jsx";
+import ConvoRoomsLogo from "../Util/ConvoRoomsLogo.jsx";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import {useThemeContext} from "../Context/ThemeContext.jsx";
+import {DarkMode, LightMode} from "@mui/icons-material";
 
 
 
@@ -17,7 +19,7 @@ const ChatRoom = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { sender, roomId, roomName } = location.state || {};
-
+    const { darkMode, toggleDarkMode } = useThemeContext();
     const [content, setContent] = useState('');
     const [messages, setMessages] = useState([]);
     const stompClientRef = useRef(null);
@@ -71,17 +73,17 @@ const ChatRoom = () => {
             {/* Header */}
             <AppBar position="fixed" color="default" elevation={2}>
                 <Toolbar sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                    <Box sx={{ height: 60 }}>
-                        <ChatHiveLogo />
+                    <Box sx={{ height: 90 }}>
+                        <ConvoRoomsLogo />
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                        <Typography variant="subtitle1" sx={{ color: "grey.300" }}>
+                        <Typography variant="subtitle1" sx={{ color: darkMode ? "white" : "black" }}>
                             Room Name: <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>{roomName || "Unknown"}</Box>
                         </Typography>
-                        <Typography variant="subtitle1" sx={{ color: "grey.300" }}>
+                        <Typography variant="subtitle1" sx={{ color: darkMode ? "white" : "black" }}>
                             Room ID: <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>{roomId || "Unknown"}</Box>
                         </Typography>
-                        <Typography variant="subtitle1" sx={{ color: "grey.300" }}>
+                        <Typography variant="subtitle1" sx={{ color: darkMode ? "white" : "black" }}>
                             User: <Box component="span" sx={{ fontWeight: 600, color: "primary.light" }}>{sender || "Guest"}</Box>
                         </Typography>
                         <Button
@@ -94,6 +96,31 @@ const ChatRoom = () => {
                             }}
                         >
                             Leave Room
+                        </Button>
+                        <Button
+                            onClick={toggleDarkMode}
+                            variant="contained"
+                            sx={{
+                                position: "fixed",
+                                top: 20,
+                                right: 20,
+                                fontWeight: "bold",
+                                px: 3,
+                                py: 1,
+                                background: darkMode
+                                    ? "linear-gradient(135deg, #f2d383, #f8b500)"
+                                    : "linear-gradient(135deg, #1e3c72, #2a5298)",
+                                color: !darkMode ? "white" : "black",
+                                boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+                                "&:hover": {
+                                    transform: "scale(1.05)",
+                                },
+                                transition: "all 0.3s ease",
+                                zIndex: 999,
+                            }}
+                        >
+                            {darkMode ? <LightMode/> : <DarkMode />}
+                            {darkMode ? "Light Mode" : "Dark Mode"}
                         </Button>
                     </Box>
                 </Toolbar>
