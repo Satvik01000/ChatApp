@@ -6,7 +6,7 @@ import '@fontsource/teko';
 import '@fontsource/poppins';
 import JoinRoom from "./Modal/JoinRoom.jsx";
 import CreateRoom from "./Modal/CreateRoom.jsx";
-import ChatHiveLogo from "../Util/ChatHiveLogo.jsx";
+import ConvoRoomsLogo from "../Util/ConvoRoomsLogo.jsx";
 import Typewriter from "typewriter-effect";
 
 const actionButtonStyle = {
@@ -40,7 +40,7 @@ const Home = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 background: darkMode
-                    ? "linear-gradient(-45deg, #0f0f27, #1f1f47, #2c3464, #0f0f27)"
+                    ? "linear-gradient(-45deg, #2c2c2c, #3d3d3d, #4e4e4e, #2c2c2c)"
                     : "linear-gradient(-45deg, #ffe29f, #ffa99f, #ffefba, #ffffff)",
                 backgroundSize: "400% 400%",
                 animation: "gradientShift 20s ease infinite",
@@ -49,7 +49,7 @@ const Home = () => {
                 overflow: "hidden",
             }}
         >
-            <ChatHiveLogo />
+            <ConvoRoomsLogo />
 
 
             <Box
@@ -78,7 +78,7 @@ const Home = () => {
                     justifyContent: "center",
                     zIndex: 2,
                     background: darkMode
-                        ? "rgba(15, 15, 39, 0.7)"
+                        ? "black"
                         : "rgba(255, 255, 255, 0.7)",
                     borderRadius: 6,
                     boxShadow: darkMode
@@ -100,9 +100,9 @@ const Home = () => {
                         px: 3,
                         py: 1,
                         background: darkMode
-                            ? "linear-gradient(135deg, #fceabb, #f8b500)"
+                            ? "linear-gradient(135deg, #f2d383, #f8b500)"
                             : "linear-gradient(135deg, #1e3c72, #2a5298)",
-                        color: "#fff",
+                        color: !darkMode ? "white" : "black",
                         boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
                         "&:hover": {
                             transform: "scale(1.05)",
@@ -111,7 +111,7 @@ const Home = () => {
                         zIndex: 999,
                     }}
                 >
-                    {darkMode ? <LightMode /> : <DarkMode />}
+                    {darkMode ? <LightMode/> : <DarkMode />}
                     {darkMode ? "Light Mode" : "Dark Mode"}
                 </Button>
 
@@ -120,7 +120,7 @@ const Home = () => {
                         fontSize: { xs: 60, md: 100 },
                         fontFamily: "teko",
                         background: darkMode
-                            ? "linear-gradient(90deg, #ff6a00, #ee0979)"
+                            ? "linear-gradient(135deg, #f9f9f9, #eaeaea, #dcdcdc, #f9f9f9)"
                             : "linear-gradient(90deg, #00c6ff, #0072ff)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
@@ -129,7 +129,7 @@ const Home = () => {
                         mb: 1,
                     }}
                 >
-                    Welcome to<br /> Chat-Hive
+                    Welcome to<br /> Convo-Rooms
                 </Typography>
 
                 <Typography
