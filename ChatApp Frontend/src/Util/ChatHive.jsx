@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import DarkLogo from "./Dark-Convo-Rooms Logo.png";
-import LightLogo from "./Light-Convo-Rooms Logo.png";
+import DarkLogo from "./Dark-Chat-Hive Logo.jpeg"
+import LightLogo from "./Light-Chat-Hive Logo.png";
 import { useThemeContext } from "../Context/ThemeContext.jsx";
 import React from "react";
 
-const ConvoRoomsLogo = () => {
+const ChatHive = () => {
     const { darkMode, toggleDarkMode } = useThemeContext(); // Correctly destructure the context
 
     return (
@@ -16,10 +16,10 @@ const ConvoRoomsLogo = () => {
                 alt="Convo-Rooms Logo"
                 sx={{
                     position: "absolute",
-                    top: 20,
+                    top: 10,
                     left: 20,
-                    width: 200,
-                    height: "auto",
+                    width: 140,
+                    height: 70,
                     zIndex: 5,
                 }}
             />
@@ -27,4 +27,4 @@ const ConvoRoomsLogo = () => {
     );
 };
 
-export default ConvoRoomsLogo;
+export default ChatHive;
