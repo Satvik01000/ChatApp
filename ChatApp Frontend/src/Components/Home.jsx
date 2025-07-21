@@ -6,7 +6,7 @@ import '@fontsource/teko';
 import '@fontsource/poppins';
 import JoinRoom from "./Modal/JoinRoom.jsx";
 import CreateRoom from "./Modal/CreateRoom.jsx";
-import ConvoRoomsLogo from "../Util/ConvoRoomsLogo.jsx";
+import ChatHive from "../Util/ChatHive.jsx";
 import Typewriter from "typewriter-effect";
 
 const actionButtonStyle = {
@@ -49,7 +49,7 @@ const Home = () => {
                 overflow: "hidden",
             }}
         >
-            <ConvoRoomsLogo />
+            <ChatHive />
 
 
             <Box
@@ -94,6 +94,7 @@ const Home = () => {
                     variant="contained"
                     sx={{
                         position: "fixed",
+                        borderRadius: "10 px !important",
                         top: 20,
                         right: 20,
                         fontWeight: "bold",
@@ -129,7 +130,7 @@ const Home = () => {
                         mb: 1,
                     }}
                 >
-                    Welcome to<br /> Convo-Rooms
+                    Welcome to<br /> Chat-Hive
                 </Typography>
 
                 <Typography

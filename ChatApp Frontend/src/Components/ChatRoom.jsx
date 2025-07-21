@@ -1,19 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import {
-    Box, Button, Grid, IconButton, InputBase, Paper, Typography,
-    Avatar, AppBar, Toolbar
-} from "@mui/material";
+import { Box, Button, Grid, IconButton, InputBase, Paper, Typography, Avatar, AppBar, Toolbar } from "@mui/material";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
 import toast from "react-hot-toast";
-import ConvoRoomsLogo from "../Util/ConvoRoomsLogo.jsx";
+import ChatHive from "../Util/ChatHive.jsx";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-import {useThemeContext} from "../Context/ThemeContext.jsx";
-import {DarkMode, LightMode} from "@mui/icons-material";
-
-
+import { useThemeContext } from "../Context/ThemeContext.jsx";
+import { DarkMode, LightMode } from "@mui/icons-material";
+import { BaseURL } from "../Util/BaseURL.js";
 
 const ChatRoom = () => {
     const navigate = useNavigate();
@@ -23,15 +19,12 @@ const ChatRoom = () => {
     const [content, setContent] = useState('');
     const [messages, setMessages] = useState([]);
     const stompClientRef = useRef(null);
-
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/chat');
+        const socket = new SockJS(`${BaseURL}/chat`);
         const stompClient = new Client({
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
-            debug: (str) => console.log(str),
             onConnect: () => {
-                console.log('Connected to WebSocket');
                 stompClient.subscribe(`/topic/room/${roomId}`, (response) => {
                     const received = JSON.parse(response.body);
                     setMessages(prev => [...prev, received]);
@@ -74,7 +67,7 @@ const ChatRoom = () => {
             <AppBar position="fixed" color="default" elevation={2}>
                 <Toolbar sx={{ justifyContent: "space-between", alignItems: "center" }}>
                     <Box sx={{ height: 90 }}>
-                        <ConvoRoomsLogo />
+                        <ChatHive />
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", justifyContent: "flex-end" }}>
                         <Typography variant="subtitle1" sx={{ color: darkMode ? "white" : "black" }}>
@@ -101,9 +94,6 @@ const ChatRoom = () => {
                             onClick={toggleDarkMode}
                             variant="contained"
                             sx={{
-                                position: "fixed",
-                                top: 20,
-                                right: 20,
                                 fontWeight: "bold",
                                 px: 3,
                                 py: 1,
@@ -116,12 +106,14 @@ const ChatRoom = () => {
                                     transform: "scale(1.05)",
                                 },
                                 transition: "all 0.3s ease",
-                                zIndex: 999,
+                                borderRadius: "10px !important",
+                                textTransform: "none"
                             }}
                         >
-                            {darkMode ? <LightMode/> : <DarkMode />}
+                            {darkMode ? <LightMode sx={{ mr: 1 }} /> : <DarkMode sx={{ mr: 1 }} />}
                             {darkMode ? "Light Mode" : "Dark Mode"}
                         </Button>
+
                     </Box>
                 </Toolbar>
             </AppBar>
