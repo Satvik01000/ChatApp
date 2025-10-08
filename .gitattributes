@@ -3,6 +3,4 @@ ChatApp-Frontend/eslint.config.js linguist-vendored
 ChatApp-Frontend/package.json linguist-vendored
 ChatApp-Frontend/vite.config.js linguist-vendored
 ChatApp-Frontend/src/Context/** linguist-vendored
-ChatApp-Frontend/src/Components/Modal/** linguist-vendored
-ChatApp-Frontend/src/Components/ChatRoom.jsx/** linguist-vendored
-ChatApp-Frontend/src/Config/** linguist-vendored
+ChatApp-Frontend/src/Components/** linguist-vendored
